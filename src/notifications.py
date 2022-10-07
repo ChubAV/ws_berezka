@@ -4,6 +4,7 @@ import requests
 import json
 import re
 import os
+from datetime import datetime
 
 from src.config import ColorLogFormatter, DEBUG, PATH_DIR_LOGS, DATE_START
 
@@ -66,6 +67,7 @@ async def listen_websockets(credentials, callback):
         logger.debug(f'Переходим в бесконечный цикл обмена сообщениями')
         while True:
             raw_response = await websocket.recv()
+            now = datetime.now()
             logger.info(f'Получили сырое сообщение -> {raw_response}')
             try:
                 logger.debug('Парсим сообщение')
@@ -78,7 +80,7 @@ async def listen_websockets(credentials, callback):
                     list_number_procedure = parse_args_new_notificatios(response['arguments'])
                     logger.info(f'Найдены сообщение о публикации следующих процедур {list_number_procedure}')
                     for order in list_number_procedure:
-                        callback(order)
+                        callback(order, now)
                 else:
                     logger.debug('Ничего интересного пропускаем')
 

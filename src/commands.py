@@ -1,6 +1,7 @@
 import os
 import pika
 from src.config import RABBITMQ_HOST, RABBITMQ_QUEUE, ColorLogFormatter, DEBUG, PATH_DIR_LOGS, DATE_START
+import json
 
 import logging
 logger = logging.getLogger('berezka.commands')
@@ -22,7 +23,7 @@ if DEBUG:
 else:
     c_handler.setLevel(logging.INFO)
 
-def send_order_in_rabbitmq(order):
+def send_order_in_rabbitmq(order, now):
     connection = None
     try:
         logger.debug(f'Попытка отправить сообщение в Rabbitmq')
@@ -30,9 +31,10 @@ def send_order_in_rabbitmq(order):
         channel = connection.channel()
         channel.queue_declare(queue=RABBITMQ_QUEUE)
         logger.debug(f'Отправка сообщения (host -> {RABBITMQ_HOST}, queue -> {RABBITMQ_QUEUE}, message -> {order})')
+        body = json.dumps({'transport':'websockets', 'order': order, 'date':str(now)})
         channel.basic_publish(exchange='',
                             routing_key=RABBITMQ_QUEUE,
-                            body=order)
+                            body=body)
     except Exception as ex:
         logger.exception(ex)
         raise ex

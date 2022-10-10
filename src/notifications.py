@@ -6,29 +6,10 @@ import re
 import os
 from datetime import datetime
 
-from src.config import ColorLogFormatter, DEBUG, PATH_DIR_LOGS, DATE_START
-
 import logging
 
 
-logger = logging.getLogger('berezka.notifications')
-logger.setLevel(logging.DEBUG)
-
-c_handler = logging.StreamHandler()
-c_format = ColorLogFormatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-c_handler.setFormatter(c_format)
-logger.addHandler(c_handler)
-
-f_handler = logging.FileHandler(os.path.join(PATH_DIR_LOGS, f'berezka-notifications-{DATE_START}.log'))
-f_format = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-f_handler.setFormatter(f_format)
-f_handler.setLevel(logging.DEBUG)
-logger.addHandler(f_handler)
-
-if DEBUG:
-    c_handler.setLevel(logging.DEBUG)
-else:
-    c_handler.setLevel(logging.INFO)
+logger = logging.getLogger('ws-berezka')
 
 def negotiate(token):
     endpoint = "https://signalr.agregatoreat.ru/AuthorizedHub/Negotiate?v=1"
@@ -93,72 +74,4 @@ def listen_notifications(token, callback):
     id = negotiate(token)
     logger.debug(f'ID сессии для websockets получен, пытаемся запустить websockets для прослушки (id={id})')
     asyncio.run(listen_websockets({'id': id, 'v':1, 'token':token},callback))
-    
-
-
-
-
-
-
-
-
-
-
-
-# async def listen_websockets(credentials)->None:
-#     # print(credentials)
-#     logging.basicConfig(
-#     format="%(message)s",
-#     level=logging.DEBUG,
-# )
-#     credential = credentials['websockets'][0]
-
-#     wss_url = f"wss://signalr.agregatoreat.ru/AuthorizedHub?id={credential['id']}&"\
-#         f"v={credential['v']}&access_token={credential['access_token']}"
-#     # wss_url = f"wss://signalr.agregatoreat.ru/AuthorizedHub?"\
-#     #     f"v={credential['v']}&access_token={credential['access_token']}"
-#     try:
-#         async with websockets.connect(wss_url) as websocket:
-#             # print(dir(websocket))
-#             data = {'protocol':'json', 'version': 1}
-#             await websocket.send('{"protocol":"json","version":1}\x1e')
-#             # response = await websocket.recv()
-#             while True:
-#                 raw_response = await websocket.recv()
-                
-#                 try:
-#                     response = json.loads(raw_response.replace('\x1e', ''))
-#                     if response['type'] == 6:
-#                         await websocket.send('{"type":6}\x1e')
-#                 except Exception as ex:
-#                     print(ex)
-                
-
-
-#                 # print(type(raw_response))
-#                 # print(raw_response)
-#                 # print(response)
-
-
-#             # print(response)
-#             # while True:
-#             #     data = {'protocol':'json', 'version': 1}
-#             #     # data = {'type':6}
-
-#             #     print("------ send ------")
-#             #     response = await websocket.send(json.dumps(data))
-#             #     print(response)
-#             #     print("******* send *******")
-#             #     sleep(15)
-#             #     data = {'type':6}
-#             #     response = await websocket.send(json.dumps(data))
-#             #     response = await websocket.recv()
-#             #     print("------ resp ------")
-#             #     print(response)
-#             #     print("******* resp ******")
-
-#     except Exception as ex:
-#         print("------ ERROR ------")
-#         print(ex)  
-#         print("******* ERROR *******")
     

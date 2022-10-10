@@ -1,27 +1,11 @@
 import os
 import pika
-from src.config import RABBITMQ_HOST, RABBITMQ_QUEUE, ColorLogFormatter, DEBUG, PATH_DIR_LOGS, DATE_START
+from src.config import RABBITMQ_HOST, RABBITMQ_QUEUE
 import json
 
 import logging
-logger = logging.getLogger('berezka.commands')
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('ws-berezka')
 
-c_handler = logging.StreamHandler()
-c_format = ColorLogFormatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-c_handler.setFormatter(c_format)
-logger.addHandler(c_handler)
-
-f_handler = logging.FileHandler(os.path.join(PATH_DIR_LOGS, f'berezka-commands-{DATE_START}.log'))
-f_format = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-f_handler.setFormatter(f_format)
-f_handler.setLevel(logging.DEBUG)
-logger.addHandler(f_handler)
-
-if DEBUG:
-    c_handler.setLevel(logging.DEBUG)
-else:
-    c_handler.setLevel(logging.INFO)
 
 def send_order_in_rabbitmq(order, now):
     connection = None

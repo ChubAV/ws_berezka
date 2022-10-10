@@ -1,13 +1,8 @@
 import os
-from src.config import DEBUG, ColorLogFormatter, PATH_DIR_LOGS, DATE_START
-from src.credentials import TransportCredential, get_credentials
-from src.notifications import listen_notifications
 import logging
-from datetime import datetime, timedelta
-from src.commands import send_order_in_rabbitmq
+from src.config import DEBUG, ColorLogFormatter, PATH_DIR_LOGS, DATE_START
 
-
-logger = logging.getLogger('berezka.main')
+logger = logging.getLogger('ws-berezka')
 logger.setLevel(logging.DEBUG)
 
 c_handler = logging.StreamHandler()
@@ -15,11 +10,20 @@ c_format = ColorLogFormatter('%(asctime)s | %(name)s | %(levelname)s | %(message
 c_handler.setFormatter(c_format)
 logger.addHandler(c_handler)
 
-f_handler = logging.FileHandler(os.path.join(PATH_DIR_LOGS, f'berezka-main-{DATE_START}.log'))
+f_handler = logging.FileHandler(os.path.join(PATH_DIR_LOGS, f'ws-berezka-{DATE_START}.log'))
 f_format = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
 f_handler.setFormatter(f_format)
 f_handler.setLevel(logging.DEBUG)
 logger.addHandler(f_handler)
+if DEBUG:
+    c_handler.setLevel(logging.DEBUG)
+else:
+    c_handler.setLevel(logging.INFO)
+
+from src.credentials import TransportCredential, get_credentials
+from src.notifications import listen_notifications
+from datetime import datetime, timedelta
+from src.commands import send_order_in_rabbitmq
 
 
 MAX_COUNT_ERRORS = 5
@@ -62,8 +66,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    if DEBUG:
-        c_handler.setLevel(logging.DEBUG)
-    else:
-        c_handler.setLevel(logging.INFO)
     main()

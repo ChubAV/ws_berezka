@@ -13,30 +13,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from src.config import  PATH_FILE_COOKIES, PATH_FILE_LOCALSTORAGE, PATH_WEBSOCKETS, PATH_DRIVER, HOME_URL, BEREZKA_LOGIN, BEREZKA_PASSWORD, ColorLogFormatter, DEBUG, PATH_DIR_LOGS, DATE_START
+from src.config import  PATH_FILE_COOKIES, PATH_FILE_LOCALSTORAGE, PATH_WEBSOCKETS, PATH_DRIVER, HOME_URL, BEREZKA_LOGIN, BEREZKA_PASSWORD
 
 import logging
 
 from src.oauth2 import generate_code_verifier, get_code_challenge, get_nonce, get_state
 
-logger = logging.getLogger('berezka.credentials')
-logger.setLevel(logging.DEBUG)
-
-c_handler = logging.StreamHandler()
-c_format = ColorLogFormatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-c_handler.setFormatter(c_format)
-logger.addHandler(c_handler)
-
-f_handler = logging.FileHandler(os.path.join(PATH_DIR_LOGS, f'berezka-credentials-{DATE_START}.log'))
-f_format = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-f_handler.setFormatter(f_format)
-f_handler.setLevel(logging.DEBUG)
-logger.addHandler(f_handler)
-
-if DEBUG:
-    c_handler.setLevel(logging.DEBUG)
-else:
-    c_handler.setLevel(logging.INFO)
+logger = logging.getLogger('ws-berezka')
 
 class LocalStorage:
 

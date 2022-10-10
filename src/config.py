@@ -49,8 +49,11 @@ PATH_DIR_LOGS = os.path.join(BASE_DIR, 'logs')
 BEREZKA_LOGIN = os.getenv('BEREZKA_LOGIN')
 BEREZKA_PASSWORD = os.getenv('BEREZKA_PASSWORD')
 
-DEBUG = bool(os.getenv('DEBUG')) if os.getenv('DEBUG') is not None else False
-# FAKE = bool(os.getenv('FAKE')) if os.getenv('FAKE') is not None else False
+DEBUG = os.getenv('DEBUG') if os.getenv('DEBUG') is not None else 'False'
+DEBUG = True if DEBUG =='True' else False
+
+
+
 
 RABBITMQ_HOST= os.getenv('RABBITMQ_HOST') if os.getenv('RABBITMQ_HOST') is not None else 'localhost'
 RABBITMQ_QUEUE=os.getenv('RABBITMQ_QUEUE') if os.getenv('RABBITMQ_QUEUE') is not None else 'ws_berezka'
